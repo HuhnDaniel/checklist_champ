@@ -1,16 +1,6 @@
 # checklist_champ
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+A productivity management application where users can fill either a calendar or a checklist with goals,
+chores or projects, and set rewards that they can unlock for themselves based on the tasks they complete.
+Optionally the user can enable a second person to manage these rewards giving the feeling of being compensated by
+someone else for their achievements.
