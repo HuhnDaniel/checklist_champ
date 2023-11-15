@@ -32,10 +32,52 @@ class MyHomePage extends StatelessWidget {
     // var appState = context.watch<MyAppState>();
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('Checklist Champ'),
-        ],
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        title: Text(
+          'Checklist Champ!',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: Center(
+        child: Column(children: [
+          AddTaskForm(),
+        ]),
+      ),
+    );
+  }
+}
+
+class AddTaskForm extends StatefulWidget {
+  const AddTaskForm({super.key});
+
+  @override
+  AddTaskFormState createState() {
+    return AddTaskFormState();
+  }
+}
+
+class AddTaskFormState extends State<AddTaskForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Task Name:',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
