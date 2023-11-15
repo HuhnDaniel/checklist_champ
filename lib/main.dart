@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -44,24 +45,35 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(children: [
-          AddTaskForm(),
+          TaskForm(),
         ]),
       ),
     );
   }
 }
 
-class AddTaskForm extends StatefulWidget {
-  const AddTaskForm({super.key});
+class TaskForm extends StatefulWidget {
+  const TaskForm({super.key});
 
   @override
-  AddTaskFormState createState() {
-    return AddTaskFormState();
+  State<TaskForm> createState() {
+    return _TaskFormState();
   }
 }
 
-class AddTaskFormState extends State<AddTaskForm> {
+class _TaskFormState extends State<TaskForm> {
   final _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final valueController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    valueController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +84,44 @@ class AddTaskFormState extends State<AddTaskForm> {
         child: Column(
           children: [
             TextFormField(
+              controller: nameController,
               decoration: InputDecoration(
                 labelText: 'Task Name:',
               ),
             ),
+            TextFormField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                labelText: 'Description (Optional):',
+              ),
+            ),
+            TextFormField(
+              controller: valueController,
+              decoration: InputDecoration(labelText: 'Reward Value:'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // var name = nameController.text;
+                // var description = descriptionController.text;
+                // var value = valueController.text;
+
+                // showDialog(
+                //     context: context,
+                //     builder: (context) {
+                //       return AlertDialog(
+                //         content: Text('$name\n$description\n$value'),
+                //       );
+                //     });
+              },
+              child: Text('Add Task'),
+            )
           ],
         ),
       ),
