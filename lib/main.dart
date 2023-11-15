@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +27,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {}
+class Task {
+  String name;
+  String description;
+  int value;
+
+  Task(this.name, this.description, this.value);
+}
+
+class MyAppState extends ChangeNotifier {
+  var taskList = <Task>[];
+
+  void addTaskToList(task) {
+    taskList.add(task);
+    notifyListeners();
+  }
+}
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -77,6 +94,8 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
     return Form(
       key: _formKey,
       child: Padding(
@@ -108,17 +127,11 @@ class _TaskFormState extends State<TaskForm> {
             ),
             ElevatedButton(
               onPressed: () {
-                // var name = nameController.text;
-                // var description = descriptionController.text;
-                // var value = valueController.text;
-
-                // showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return AlertDialog(
-                //         content: Text('$name\n$description\n$value'),
-                //       );
-                //     });
+                appState.addTaskToList(Task(
+                  nameController.text,
+                  descriptionController.text,
+                  int.parse(valueController.text),
+                ));
               },
               child: Text('Add Task'),
             )
