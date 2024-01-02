@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,7 +63,39 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Column(children: [
           TaskForm(),
+          TaskList(),
         ]),
+      ),
+    );
+  }
+}
+
+class TaskList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    if (appState.taskList.isEmpty) {
+      return Center(
+        child: Text('No Tasks to List'),
+      );
+    }
+    // } else {
+    //   return Center(
+    //     child: Text('You have ${appState.taskList.length} tasks'),
+    //   );
+    // }
+
+    return SizedBox(
+      height: 400,
+      child: ListView(
+        children: [
+          Text('You have ${appState.taskList.length} favorites'),
+          for (var task in appState.taskList)
+            ListTile(
+              title: Text(task.name),
+            )
+        ],
       ),
     );
   }
