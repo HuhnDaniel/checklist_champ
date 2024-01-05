@@ -37,9 +37,15 @@ class Task {
 
 class MyAppState extends ChangeNotifier {
   var taskList = <Task>[];
+  String currentPage = 'TaskList';
 
   void addTaskToList(task) {
     taskList.add(task);
+    notifyListeners();
+  }
+
+  void selectPage(page) {
+    currentPage = page;
     notifyListeners();
   }
 }
@@ -47,7 +53,19 @@ class MyAppState extends ChangeNotifier {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // var appState = context.watch<MyAppState>();
+    var currentPage = context.watch<MyAppState>().currentPage;
+
+    Widget page;
+    switch (currentPage) {
+      case 'TaskForm':
+        page = TaskForm();
+        break;
+      case 'TaskList':
+        page = TaskList();
+        break;
+      default:
+        throw UnimplementedError('No widget for $currentPage');
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -61,10 +79,11 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Column(children: [
-          TaskForm(),
-          TaskList(),
-        ]),
+        child:
+            // Column(children: [
+            // TaskForm(),
+            page,
+        // ]),
       ),
     );
   }
@@ -75,29 +94,61 @@ class TaskList extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
+    var thing = Task('e', 'b', 8);
+    appState.addTaskToList(thing);
+
     if (appState.taskList.isEmpty) {
       return Center(
         child: Text('No Tasks to List'),
       );
     }
-    // } else {
-    //   return Center(
-    //     child: Text('You have ${appState.taskList.length} tasks'),
-    //   );
-    // }
 
-    return SizedBox(
-      height: 400,
-      child: ListView(
-        children: [
-          Text('You have ${appState.taskList.length} favorites'),
-          for (var task in appState.taskList)
-            ListTile(
-              title: Text(task.name),
-            )
-        ],
-      ),
+    return Column(
+      children: [
+        Text('You have ${appState.taskList.length} tasks!'),
+        Expanded(
+          child: ListView(
+            children: [
+              // Text('You have ${appState.taskList.length} favorites'),
+              for (var task in appState.taskList)
+                ListTile(
+                  title: Text(task.name),
+                )
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: () {
+                appState.selectPage('TaskForm');
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
+        ),
+      ],
     );
+
+    // return Column(
+    //   children: [
+    //     Text('You have ${appState.taskList.length} favorites'),
+    //     SizedBox(
+    //       height: 500,
+    //       child: ListView(
+    //         children: [
+    //           // Text('You have ${appState.taskList.length} favorites'),
+    //           for (var task in appState.taskList)
+    //             ListTile(
+    //               title: Text(task.name),
+    //             )
+    //         ],
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }
 
