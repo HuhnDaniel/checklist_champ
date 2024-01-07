@@ -59,10 +59,8 @@ class MyHomePage extends StatelessWidget {
     switch (currentPage) {
       case 'TaskForm':
         page = TaskForm();
-        break;
       case 'TaskList':
         page = TaskList();
-        break;
       default:
         throw UnimplementedError('No widget for $currentPage');
     }
@@ -79,11 +77,7 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       body: Center(
-        child:
-            // Column(children: [
-            // TaskForm(),
-            page,
-        // ]),
+        child: page,
       ),
     );
   }
@@ -94,12 +88,27 @@ class TaskList extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
-    var thing = Task('e', 'b', 8);
-    appState.addTaskToList(thing);
-
     if (appState.taskList.isEmpty) {
       return Center(
-        child: Text('No Tasks to List'),
+        child: Column(
+          children: [
+            Text('No Tasks to List'),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      appState.selectPage('TaskForm');
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -109,7 +118,6 @@ class TaskList extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              // Text('You have ${appState.taskList.length} favorites'),
               for (var task in appState.taskList)
                 ListTile(
                   title: Text(task.name),
@@ -131,24 +139,6 @@ class TaskList extends StatelessWidget {
         ),
       ],
     );
-
-    // return Column(
-    //   children: [
-    //     Text('You have ${appState.taskList.length} favorites'),
-    //     SizedBox(
-    //       height: 500,
-    //       child: ListView(
-    //         children: [
-    //           // Text('You have ${appState.taskList.length} favorites'),
-    //           for (var task in appState.taskList)
-    //             ListTile(
-    //               title: Text(task.name),
-    //             )
-    //         ],
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 }
 
@@ -215,6 +205,7 @@ class _TaskFormState extends State<TaskForm> {
                   descriptionController.text,
                   int.parse(valueController.text),
                 ));
+                appState.selectPage('TaskList');
               },
               child: Text('Add Task'),
             )
