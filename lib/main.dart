@@ -122,8 +122,48 @@ class TaskList extends StatelessWidget {
           child: ListView(
             children: [
               for (var task in appState.taskList)
-                ListTile(
-                  title: Text(task.name),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Text(task.name, style: TextStyle(fontSize: 24)),
+                        Spacer(),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Icon(Icons.check),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
             ],
           ),
