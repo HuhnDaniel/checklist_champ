@@ -44,6 +44,11 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTask(i) {
+    taskList.removeAt(i);
+    notifyListeners();
+  }
+
   void selectPage(page) {
     currentPage = page;
     notifyListeners();
@@ -121,7 +126,8 @@ class TaskList extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
-              for (var task in appState.taskList)
+              // for (var task in appState.taskList)
+              for (int i = 0; i < appState.taskList.length; i++)
                 Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -132,7 +138,8 @@ class TaskList extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        Text(task.name, style: TextStyle(fontSize: 24)),
+                        Text(appState.taskList[i].name,
+                            style: TextStyle(fontSize: 24)),
                         Spacer(),
                         ElevatedButton(
                           style: ButtonStyle(
@@ -158,7 +165,9 @@ class TaskList extends StatelessWidget {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            appState.deleteTask(i);
+                          },
                           child: Icon(Icons.close),
                         ),
                       ],
