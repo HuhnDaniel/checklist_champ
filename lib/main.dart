@@ -114,7 +114,10 @@ class TaskList extends StatelessWidget {
 
     return Column(
       children: [
-        Text('You have ${appState.taskList.length} tasks!'),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have ${appState.taskList.length} tasks!'),
+        ),
         Expanded(
           child: ListView(
             children: [
@@ -198,17 +201,27 @@ class _TaskFormState extends State<TaskForm> {
             SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              onPressed: () {
-                appState.addTaskToList(Task(
-                  nameController.text,
-                  descriptionController.text,
-                  int.parse(valueController.text),
-                ));
-                appState.selectPage('TaskList');
-              },
-              child: Text('Add Task'),
-            )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      appState.selectPage('TaskList');
+                    },
+                    child: Text('Cancel')),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.addTaskToList(Task(
+                      nameController.text,
+                      descriptionController.text,
+                      int.parse(valueController.text),
+                    ));
+                    appState.selectPage('TaskList');
+                  },
+                  child: Text('Add'),
+                ),
+              ],
+            ),
           ],
         ),
       ),
