@@ -38,6 +38,7 @@ class Task {
 class MyAppState extends ChangeNotifier {
   var taskList = <Task>[];
   String currentPage = 'TaskList';
+  int bank = 0;
 
   void addTaskToList(task) {
     taskList.add(task);
@@ -46,6 +47,11 @@ class MyAppState extends ChangeNotifier {
 
   void deleteTask(i) {
     taskList.removeAt(i);
+    notifyListeners();
+  }
+
+  void changeBankBalance(int value) {
+    bank = bank + value;
     notifyListeners();
   }
 
@@ -97,7 +103,7 @@ class TaskList extends StatelessWidget {
       return Center(
         child: Column(
           children: [
-            Text('No Tasks to List'),
+            Text('No Tasks to List, and ${appState.bank} points'),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -121,7 +127,8 @@ class TaskList extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text('You have ${appState.taskList.length} tasks!'),
+          child: Text(
+              'You have ${appState.taskList.length} tasks!, and ${appState.bank} points!'),
         ),
         Expanded(
           child: ListView(
@@ -150,7 +157,11 @@ class TaskList extends StatelessWidget {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            appState
+                                .changeBankBalance(appState.taskList[i].value);
+                            appState.deleteTask(i);
+                          },
                           child: Icon(Icons.check),
                         ),
                         SizedBox(
