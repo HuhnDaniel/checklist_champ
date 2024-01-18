@@ -1,5 +1,9 @@
 // import 'dart:developer';
+import 'dart:async';
 
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +37,14 @@ class Task {
   int value;
 
   Task(this.name, this.description, this.value);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'value': value,
+    };
+  }
 }
 
 class MyAppState extends ChangeNotifier {
