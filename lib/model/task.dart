@@ -5,11 +5,9 @@ class Task {
 
   Task(this.name, this.description, this.value);
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'description': description,
-      'value': value,
-    };
-  }
+  factory Task.fromSqfliteDatabase(Map<String, dynamic> map) => Task(
+        map['name'] ?? '',
+        map['description'] ?? '',
+        map['value'].toInt() ?? 0,
+      );
 }

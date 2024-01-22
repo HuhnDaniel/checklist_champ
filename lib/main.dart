@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:checklist_champ/model/task.dart';
+import 'package:checklist_champ/database/database_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,23 +33,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class Task {
-//   String name;
-//   String description;
-//   int value;
-
-//   Task(this.name, this.description, this.value);
-
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'name': name,
-//       'description': description,
-//       'value': value,
-//     };
-//   }
-// }
-
 class MyAppState extends ChangeNotifier {
+  Future<List<Task>>? futureTasks;
+  final taskDB = TaskDB();
+
+  @override
+  void fetchTasks() {
+    futureTasks = taskDB.fetchAll();
+  }
+
   var taskList = <Task>[];
   String currentPage = 'TaskList';
   int bank = 0;
@@ -285,9 +278,9 @@ class _TaskFormState extends State<TaskForm> {
                 ElevatedButton(
                   onPressed: () {
                     appState.addTaskToList(Task(
-                      nameController.text,
-                      descriptionController.text,
-                      int.parse(valueController.text),
+                      nameController.text ?? '',
+                      descriptionController.text ?? '',
+                      int.parse(valueController.text) ?? 0,
                     ));
                     appState.selectPage('TaskList');
                   },
