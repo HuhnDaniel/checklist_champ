@@ -1,4 +1,4 @@
-// import 'dart:developer';
+// import 'dart:developer' as developer;
 // import 'dart:async';
 
 // import 'package:path/path.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'Checklist Champ',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
@@ -35,19 +35,19 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   Future<List<Task>>? futureTasks;
-  final taskDB = TaskDB();
+  List<Task>? tasks;
 
-  @override
-  void fetchTasks() {
-    futureTasks = taskDB.fetchAll();
+  void fetchTasks() async {
+    futureTasks = TaskDB().fetchAll();
+    tasks = await futureTasks;
   }
 
   var taskList = <Task>[];
   String currentPage = 'TaskList';
   int bank = 0;
 
-  void addTaskToList(task) {
-    taskList.add(task);
+  void addTaskToList(name, description, value) async {
+    await TaskDB().create(name: name, description: description, value: value);
     notifyListeners();
   }
 
@@ -104,8 +104,9 @@ class TaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    appState.fetchTasks();
 
-    if (appState.taskList.isEmpty) {
+    if (appState.tasks!.isEmpty) {
       return Center(
         child: Column(
           children: [
@@ -134,13 +135,12 @@ class TaskList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(20),
           child: Text(
-              'You have ${appState.taskList.length} tasks!, and ${appState.bank} points!'),
+              'You have ${appState.tasks!.length} tasks!, and ${appState.bank} points!'),
         ),
         Expanded(
           child: ListView(
             children: [
-              // for (var task in appState.taskList)
-              for (int i = 0; i < appState.taskList.length; i++)
+              for (int i = 0; i < appState.tasks!.length; i++)
                 Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -151,42 +151,42 @@ class TaskList extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        Text(appState.taskList[i].name,
+                        Text(appState.tasks![i].name,
                             style: TextStyle(fontSize: 24)),
                         Spacer(),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            appState
-                                .changeBankBalance(appState.taskList[i].value);
-                            appState.deleteTask(i);
-                          },
-                          child: Icon(Icons.check),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            appState.deleteTask(i);
-                          },
-                          child: Icon(Icons.close),
-                        ),
+                        // ElevatedButton(
+                        //   style: ButtonStyle(
+                        //     shape: MaterialStateProperty.all<
+                        //         RoundedRectangleBorder>(
+                        //       RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(10),
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   onPressed: () {
+                        //     appState
+                        //         .changeBankBalance(appState.taskList[i].value);
+                        //     appState.deleteTask(i);
+                        //   },
+                        //   child: Icon(Icons.check),
+                        // ),
+                        // SizedBox(
+                        //   width: 20,
+                        // ),
+                        // ElevatedButton(
+                        //   style: ButtonStyle(
+                        //     shape: MaterialStateProperty.all<
+                        //         RoundedRectangleBorder>(
+                        //       RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(10),
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   onPressed: () {
+                        //     appState.deleteTask(i);
+                        //   },
+                        //   child: Icon(Icons.close),
+                        // ),
                       ],
                     ),
                   ),
@@ -277,11 +277,11 @@ class _TaskFormState extends State<TaskForm> {
                     child: Text('Cancel')),
                 ElevatedButton(
                   onPressed: () {
-                    appState.addTaskToList(Task(
-                      nameController.text ?? '',
-                      descriptionController.text ?? '',
-                      int.parse(valueController.text) ?? 0,
-                    ));
+                    appState.addTaskToList(
+                      nameController.text,
+                      descriptionController.text,
+                      int.parse(valueController.text),
+                    );
                     appState.selectPage('TaskList');
                   },
                   child: Text('Add'),

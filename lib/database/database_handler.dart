@@ -66,6 +66,18 @@ class TaskDB {
     );''');
   }
 
+  Future<int> create(
+      {required String name,
+      required String description,
+      required int value}) async {
+    final database = await DatabaseHandler().database;
+
+    return await database.rawInsert(
+      '''INSERT INTO $tableName (name, description, value) VALUES (?,?,?)''',
+      [name, description, value],
+    );
+  }
+
   Future<List<Task>> fetchAll() async {
     final database = await DatabaseHandler().database;
     final tasks = await database.rawQuery('''SELECT * FROM $tableName''');
