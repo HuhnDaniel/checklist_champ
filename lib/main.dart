@@ -106,108 +106,259 @@ class TaskList extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     appState.fetchTasks();
 
-    if (appState.tasks!.isEmpty) {
-      return Center(
-        child: Column(
-          children: [
-            Text('No Tasks to List, and ${appState.bank} points'),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      appState.selectPage('TaskForm');
-                    },
-                    child: Icon(Icons.add),
+    // if (appState.tasks == null || appState.tasks!.isEmpty) {
+    //   return Center(
+    //     child: Column(
+    //       children: [
+    //         Text('No Tasks to List, and ${appState.bank} points'),
+    //         Expanded(
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(20),
+    //             child: Align(
+    //               alignment: Alignment.bottomRight,
+    //               child: FloatingActionButton(
+    //                 onPressed: () {
+    //                   appState.selectPage('TaskForm');
+    //                 },
+    //                 child: Icon(Icons.add),
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
+
+    return FutureBuilder(
+        future: appState.futureTasks,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text('Loading'));
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return Center(
+              child: Column(
+                children: [
+                  Text('No Tasks to List, and ${appState.bank} points'),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            appState.selectPage('TaskForm');
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                      'You have ${snapshot.data!.length} tasks!, and ${appState.bank} points!'),
+                ),
+                // Expanded(
+                //   child: ListView(
+                //     children: [
+                //       for (int i = 0; i < appState.tasks!.length; i++)
+                //         Container(
+                //           decoration: BoxDecoration(
+                //             border: Border(
+                //               bottom: BorderSide(color: Colors.black),
+                //             ),
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(20),
+                //             child: Row(
+                //               children: [
+                //                 Text(appState.tasks![i].name,
+                //                     style: TextStyle(fontSize: 24)),
+                //                 Spacer(),
+                // ElevatedButton(
+                //   style: ButtonStyle(
+                //     shape: MaterialStateProperty.all<
+                //         RoundedRectangleBorder>(
+                //       RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //       ),
+                //     ),
+                //   ),
+                //   onPressed: () {
+                //     appState
+                //         .changeBankBalance(appState.taskList[i].value);
+                //     appState.deleteTask(i);
+                //   },
+                //   child: Icon(Icons.check),
+                // ),
+                // SizedBox(
+                //   width: 20,
+                // ),
+                // ElevatedButton(
+                //   style: ButtonStyle(
+                //     shape: MaterialStateProperty.all<
+                //         RoundedRectangleBorder>(
+                //       RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //       ),
+                //     ),
+                //   ),
+                //   onPressed: () {
+                //     appState.deleteTask(i);
+                //   },
+                //   child: Icon(Icons.close),
+                // ),
+                //               ],
+                //             ),
+                //           ),
+                //         )
+                //     ],
+                //   ),
+                // ),
+                Expanded(
+                  child: ListView(
+                    // child: FutureBuilder(
+                    //     future: appState.futureTasks,
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.connectionState == ConnectionState.waiting) {
+                    //         return Center(child: Text('Loading'));
+                    //       } else {
+                    //         return ListView(
+                    children: [
+                      for (int i = 0; i < snapshot.data!.length; i++)
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Colors.black),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              children: [
+                                Text(snapshot.data![i].name,
+                                    style: TextStyle(fontSize: 24)),
+                                Spacer(),
+                                // ElevatedButton(
+                                //   style: ButtonStyle(
+                                //     shape: MaterialStateProperty.all<
+                                //         RoundedRectangleBorder>(
+                                //       RoundedRectangleBorder(
+                                //         borderRadius: BorderRadius.circular(10),
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   onPressed: () {
+                                //     appState
+                                //         .changeBankBalance(appState.taskList[i].value);
+                                //     appState.deleteTask(i);
+                                //   },
+                                //   child: Icon(Icons.check),
+                                // ),
+                                // SizedBox(
+                                //   width: 20,
+                                // ),
+                                // ElevatedButton(
+                                //   style: ButtonStyle(
+                                //     shape: MaterialStateProperty.all<
+                                //         RoundedRectangleBorder>(
+                                //       RoundedRectangleBorder(
+                                //         borderRadius: BorderRadius.circular(10),
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   onPressed: () {
+                                //     appState.deleteTask(i);
+                                //   },
+                                //   child: Icon(Icons.close),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                    // );
+                    //   }
+                    // }
+                    // child: ListView(
+                    //   children: [
+                    //     for (int i = 0; i < appState.tasks!.length; i++)
+                    //       Container(
+                    //         decoration: BoxDecoration(
+                    //           border: Border(
+                    //             bottom: BorderSide(color: Colors.black),
+                    //           ),
+                    //         ),
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.all(20),
+                    //           child: Row(
+                    //             children: [
+                    //               Text(appState.tasks![i].name,
+                    //                   style: TextStyle(fontSize: 24)),
+                    //               Spacer(),
+                    // ElevatedButton(
+                    //   style: ButtonStyle(
+                    //     shape: MaterialStateProperty.all<
+                    //         RoundedRectangleBorder>(
+                    //       RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   onPressed: () {
+                    //     appState
+                    //         .changeBankBalance(appState.taskList[i].value);
+                    //     appState.deleteTask(i);
+                    //   },
+                    //   child: Icon(Icons.check),
+                    // ),
+                    // SizedBox(
+                    //   width: 20,
+                    // ),
+                    // ElevatedButton(
+                    //   style: ButtonStyle(
+                    //     shape: MaterialStateProperty.all<
+                    //         RoundedRectangleBorder>(
+                    //       RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   onPressed: () {
+                    //     appState.deleteTask(i);
+                    //   },
+                    //   child: Icon(Icons.close),
+                    // ),
+                    //                 ],
+                    //               ),
+                    //             ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(
-              'You have ${appState.tasks!.length} tasks!, and ${appState.bank} points!'),
-        ),
-        Expanded(
-          child: ListView(
-            children: [
-              for (int i = 0; i < appState.tasks!.length; i++)
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.black),
+                //       ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        appState.selectPage('TaskForm');
+                      },
+                      child: Icon(Icons.add),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Text(appState.tasks![i].name,
-                            style: TextStyle(fontSize: 24)),
-                        Spacer(),
-                        // ElevatedButton(
-                        //   style: ButtonStyle(
-                        //     shape: MaterialStateProperty.all<
-                        //         RoundedRectangleBorder>(
-                        //       RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(10),
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   onPressed: () {
-                        //     appState
-                        //         .changeBankBalance(appState.taskList[i].value);
-                        //     appState.deleteTask(i);
-                        //   },
-                        //   child: Icon(Icons.check),
-                        // ),
-                        // SizedBox(
-                        //   width: 20,
-                        // ),
-                        // ElevatedButton(
-                        //   style: ButtonStyle(
-                        //     shape: MaterialStateProperty.all<
-                        //         RoundedRectangleBorder>(
-                        //       RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(10),
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   onPressed: () {
-                        //     appState.deleteTask(i);
-                        //   },
-                        //   child: Icon(Icons.close),
-                        // ),
-                      ],
-                    ),
-                  ),
-                )
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              onPressed: () {
-                appState.selectPage('TaskForm');
-              },
-              child: Icon(Icons.add),
-            ),
-          ),
-        ),
-      ],
-    );
+                ),
+              ],
+            );
+          }
+        });
   }
 }
 
